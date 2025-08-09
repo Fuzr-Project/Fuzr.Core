@@ -11,18 +11,6 @@ public abstract class FuzrBaseCommand : IFuzrBaseCommand
     public abstract void ExecuteFull(string[]? args);
     public virtual void ExecuteShort(string[]? args) => ExecuteFull(args);
 
-    public bool MatchesAnyCommand(string[] args)
-    {
-        var arg = args.FirstOrDefault();
-        
-        if (string.IsNullOrEmpty(arg))
-            return false;
-        
-        var hasShortCommand = arg.Trim().Equals(ShortName, StringComparison.InvariantCultureIgnoreCase);
-        var hasLongCommand = arg.Trim().Equals(FullName, StringComparison.InvariantCultureIgnoreCase);
-        return hasShortCommand || hasLongCommand;
-    }
-    
     public bool MatchesFullCommand(string[] args)
     {
         var arg = args.FirstOrDefault();
@@ -30,10 +18,16 @@ public abstract class FuzrBaseCommand : IFuzrBaseCommand
         if (string.IsNullOrEmpty(arg))
             return false;
         
-        var hasLongCommand = arg.Trim().Equals(FullName, StringComparison.InvariantCultureIgnoreCase);
-        return hasLongCommand;
+        if (arg.StartsWith("-"))
+        {
+            if (!arg.StartsWith("--"))
+                return false;
+            arg = arg.Substring(2);
+        }
+
+        return arg.Equals(FullName, StringComparison.InvariantCultureIgnoreCase);
     }
-    
+
     public bool MatchesShortCommand(string[] args)
     {
         var arg = args.FirstOrDefault();
@@ -41,7 +35,11 @@ public abstract class FuzrBaseCommand : IFuzrBaseCommand
         if (string.IsNullOrEmpty(arg))
             return false;
         
-        var hasShortCommand = arg.Trim().Equals(ShortName, StringComparison.InvariantCultureIgnoreCase);
-        return hasShortCommand;
+        if (!arg.StartsWith("-") || arg.StartsWith("--"))
+            return false;
+
+        var trimmedArg = arg.Substring(1);
+
+        return trimmedArg.Equals(ShortName, StringComparison.InvariantCultureIgnoreCase);
     }
 }
