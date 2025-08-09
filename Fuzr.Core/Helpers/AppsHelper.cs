@@ -161,4 +161,11 @@ public static class AppsHelper
             entryPoint.Invoke(null, parameters);
         }
     }
+
+    public static CoreConfig GetCoreConfig()
+    {
+        var configByte = ResourceHelper.GetResourceBytes(FuzrConstants.CoreConfigFileName);
+        var coreConfig = DeserializeCoreConfig(configByte);
+        return coreConfig;
+    }
 }

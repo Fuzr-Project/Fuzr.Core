@@ -15,9 +15,7 @@ class Program
         if (internalCommands)
             return;
         
-        var configByte = ResourceHelper.GetResourceBytes(FuzrConstants.CoreConfigFileName);
-        var coreConfig = AppsHelper.DeserializeCoreConfig(configByte);
-
+        var coreConfig = AppsHelper.GetCoreConfig();
         var argList = ArgumentsHelper.ProcessArguments(args);
         var firstCommand = argList.FirstOrDefault(x => x.IsBaseCommand);
         
